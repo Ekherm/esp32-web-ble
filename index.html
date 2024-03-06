@@ -31,12 +31,6 @@
         </div>
         <div class="card-grid">
             <div class="card">
-                <h2>Fetched Value</h2>
-                <p class="reading"><span id="valueContainer">NaN</span></p>
-                <p class="gray-label">Last reading: <span id="timestamp"></span></p>
-            </div>
-
-            <div class="card">
                 <h2>Temperature and Humidity</h2>
                 <p class="reading"><span id="tempContainer">NaN</span><br><span id="humidityContainer">NaN</span></p>
                 <p class="gray-label">Last values: <span id="timestampTempHumidity"></span></p>
@@ -57,12 +51,10 @@
     const disconnectButton = document.getElementById('disconnectBleButton');
     const onButton = document.getElementById('onButton');
     const offButton = document.getElementById('offButton');
-    const retrievedValue = document.getElementById('valueContainer');
     const tempContainer = document.getElementById('tempContainer');
     const humidityContainer = document.getElementById('humidityContainer');
     const latestValueSent = document.getElementById('valueSent');
     const bleStateContainer = document.getElementById('bleState');
-    const timestampContainer = document.getElementById('timestamp');
     const timestampTempHumidity = document.getElementById('timestampTempHumidity');
 
     // Define BLE Device Specs
@@ -137,7 +129,7 @@
             console.log("Read value: ", value);
             const decodedValue = new TextDecoder().decode(value);
             console.log("Decoded value: ", decodedValue);
-            retrievedValue.innerHTML = decodedValue;
+            // Do nothing with the fetched value
         })
         .catch(error => {
             console.log('Error: ', error);
@@ -155,8 +147,6 @@
     function handleCharacteristicChange(event){
         const newValueReceived = new TextDecoder().decode(event.target.value);
         console.log("Characteristic value changed: ", newValueReceived);
-        retrievedValue.innerHTML = newValueReceived;
-        timestampContainer.innerHTML = getDateTime();
 
         // Parse temperature and humidity from received data
         const regex = /Temperature: ([\d.]+) °C\nHumidity: ([\d.]+) %/;
@@ -236,4 +226,5 @@
     }
 </script>
 </html>
+
 
