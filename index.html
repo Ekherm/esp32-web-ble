@@ -37,6 +37,12 @@
             </div>
 
             <div class="card">
+                <h2>Temperature and Humidity</h2>
+                <p class="reading"><span id="tempContainer">NaN</span><br><span id="humidityContainer">NaN</span></p>
+                <p class="gray-label">Last values: <span id="timestampTempHumidity"></span></p>
+            </div>
+
+            <div class="card">
                 <h2>Control GPIO 2</h2>
                 <button id="onButton" class="onButton">ON</button>
                 <button id="offButton" class="offButton">OFF</button>
@@ -52,17 +58,20 @@
     const onButton = document.getElementById('onButton');
     const offButton = document.getElementById('offButton');
     const retrievedValue = document.getElementById('valueContainer');
+    const tempContainer = document.getElementById('tempContainer');
+    const humidityContainer = document.getElementById('humidityContainer');
     const latestValueSent = document.getElementById('valueSent');
     const bleStateContainer = document.getElementById('bleState');
     const timestampContainer = document.getElementById('timestamp');
+    const timestampTempHumidity = document.getElementById('timestampTempHumidity');
 
-    //Define BLE Device Specs
+    // Define BLE Device Specs
     var deviceName ='ESP32';
     var bleService = '19b10000-e8f2-537e-4f6c-d104768a1214';
     var ledCharacteristic = '19b10002-e8f2-537e-4f6c-d104768a1214';
     var sensorCharacteristic= '19b10001-e8f2-537e-4f6c-d104768a1214';
 
-    //Global Variables to Handle Bluetooth
+    // Global Variables to Handle Bluetooth
     var bleServer;
     var bleServiceFound;
     var sensorCharacteristicFound;
@@ -148,6 +157,20 @@
         console.log("Characteristic value changed: ", newValueReceived);
         retrievedValue.innerHTML = newValueReceived;
         timestampContainer.innerHTML = getDateTime();
+
+        // Parse temperature and humidity from received data
+        const regex = /Temperature: ([\d.]+) °C\nHumidity: ([\d.]+) %/;
+        const matches = newValueReceived.match(regex);
+
+        if (matches && matches.length === 3) {
+            const temperature = matches[1];
+            const humidity = matches[2];
+
+            // Display temperature and humidity on the web page
+            tempContainer.innerHTML = `Temperature: ${temperature} °C`;
+            humidityContainer.innerHTML = `Humidity: ${humidity} %`;
+            timestampTempHumidity.innerHTML = getDateTime();
+        }
     }
 
     function writeOnCharacteristic(value){
@@ -211,8 +234,6 @@
         var datetime = day + "/" + month + "/" + year + " at " + hours + ":" + minutes + ":" + seconds;
         return datetime;
     }
-
-
 </script>
-
 </html>
+
