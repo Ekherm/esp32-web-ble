@@ -31,9 +31,9 @@
         </div>
         <div class="card-grid">
             <div class="card">
-                <h2>Temperature and Humidity</h2>
-                <p class="reading"><span id="tempContainer">NaN</span><br><span id="humidityContainer">NaN</span></p>
-                <p class="gray-label">Last values: <span id="timestampTempHumidity"></span></p>
+                <h2>Ultrasound Sensor</h2>
+                <p class="reading"><span id="distanceContainer">NaN</span></p>
+                <p class="gray-label">Last reading: <span id="timestampDistance"></span></p>
             </div>
 
             <div class="card">
@@ -51,11 +51,10 @@
     const disconnectButton = document.getElementById('disconnectBleButton');
     const onButton = document.getElementById('onButton');
     const offButton = document.getElementById('offButton');
-    const tempContainer = document.getElementById('tempContainer');
-    const humidityContainer = document.getElementById('humidityContainer');
+    const distanceContainer = document.getElementById('distanceContainer');
     const latestValueSent = document.getElementById('valueSent');
     const bleStateContainer = document.getElementById('bleState');
-    const timestampTempHumidity = document.getElementById('timestampTempHumidity');
+    const timestampDistance = document.getElementById('timestampDistance');
 
     // Define BLE Device Specs
     var deviceName ='ESP32';
@@ -148,19 +147,9 @@
         const newValueReceived = new TextDecoder().decode(event.target.value);
         console.log("Characteristic value changed: ", newValueReceived);
 
-        // Parse temperature and humidity from received data
-        const regex = /Temperature: ([\d.]+) °C\nHumidity: ([\d.]+) %/;
-        const matches = newValueReceived.match(regex);
-
-        if (matches && matches.length === 3) {
-            const temperature = matches[1];
-            const humidity = matches[2];
-
-            // Display temperature and humidity on the web page
-            tempContainer.innerHTML = `Temperature: ${temperature} °C`;
-            humidityContainer.innerHTML = `Humidity: ${humidity} %`;
-            timestampTempHumidity.innerHTML = getDateTime();
-        }
+        // Display distance on the web page
+        distanceContainer.innerHTML = `Distance: ${newValueReceived} cm`;
+        timestampDistance.innerHTML = getDateTime();
     }
 
     function writeOnCharacteristic(value){
@@ -226,5 +215,4 @@
     }
 </script>
 </html>
-
 
